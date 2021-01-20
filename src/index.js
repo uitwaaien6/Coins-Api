@@ -3,7 +3,6 @@
 require('./models/Coins');
 require('dotenv').config();
 const mongoose = require('mongoose');
-
 const coinsRoutes = require('./routes/coinsRoutes');
 const express = require('express');
 const app = express();

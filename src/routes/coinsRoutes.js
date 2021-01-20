@@ -7,6 +7,7 @@ const axios = require('axios');
 
 const router = express.Router();
 
+let backupCoinsArray = [];
 let apiKeyIndex = 0;
 let currentApiKey = process.env.API_KEY_0; // initial api key;
 const threeMin = 180000;
@@ -57,6 +58,8 @@ async function updateCoins() {
         const response = await axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest', config);
         const data = response.data.data;
 
+        backupCoinsArray = [...data];
+
         const existingCoins = await Coins.findOne();
         
         if (!existingCoins) {
@@ -94,13 +97,13 @@ router.get('/api/coins', async (req, res) => {
 
         const existingCoins = await Coins.findOne();
 
-        if (!existingCoins) {
+        if (!existingCoins && !backupCoinsArray) {
             return res.send('<h1>Coins cannot be fetched please try again...</h1>');
         }
 
         const coins = existingCoins.coins;
 
-        return res.json(coins);
+        return res.json(coins || backupCoinsArray);
 
     } catch (error) {
         console.log(error.message);
@@ -114,19 +117,20 @@ router.get('/api/coins/:coinName', async (req, res) => {
 
         const existingCoins = await Coins.findOne();
 
-        if (!existingCoins) {
+        if (!existingCoins && !backupCoinsArray) {
             return res.send('<h1>Coins cannot be fetched please try again...</h1>');
         }
 
         const coins = existingCoins.coins;
 
         const wantedCoin = coins.find((coin, index) => coin.name === makeFirstUpper(coinName) || coin.symbol === coinName.toUpperCase() ? coin : null);
+        const backupWantedCoin = backupCoinsArray.find((coin, index) => coin.name === makeFirstUpper(coinName) || coin.symbol === coinName.toUpperCase() ? coin : null);
 
-        if (!wantedCoin) {
+        if (!wantedCoin && !backupWantedCoin) {
             return res.status(422).send('<h1>Sorry, couldnt find the coin you are looking for...');
         }
         
-        return res.json(wantedCoin);
+        return res.json(wantedCoin || backupWantedCoin);
 
     } catch (error) {
         console.log(error.message);
