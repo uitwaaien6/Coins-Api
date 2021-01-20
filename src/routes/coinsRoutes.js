@@ -1,7 +1,5 @@
 "use strict";
 
-const mongoose = require('mongoose');
-const Coins = mongoose.model('Coins');
 const express = require('express');
 const axios = require('axios');
 
@@ -23,7 +21,7 @@ function increaseApiKeyIndex() {
 }
 
 function makeFirstUpper(word) {
-    return word[0].toUpperCase() + word.substr(1, word.length);
+    return word[0].toUpperCase() + word.substr(1, word.length).toLowerCase();
 }
 
 async function updateCoins() {
@@ -60,15 +58,6 @@ async function updateCoins() {
 
         backupCoinsArray = [...data];
 
-        const existingCoins = await Coins.findOne();
-        
-        if (!existingCoins) {
-            const initialCoins = new Coins({ coins: data });
-            await initialCoins.save();
-        }
-
-        await Coins.updateOne({ coins: data });
-
     } catch (error) {
         console.log(error.message);
     }
@@ -95,15 +84,11 @@ router.get('/api', async (req, res) => {
 router.get('/api/coins', async (req, res) => {
     try {
 
-        const existingCoins = await Coins.findOne();
-
-        if (!existingCoins && !backupCoinsArray) {
+        if (!backupCoinsArray) {
             return res.send('<h1>Coins cannot be fetched please try again...</h1>');
         }
 
-        const coins = existingCoins.coins;
-
-        return res.json(coins || backupCoinsArray);
+        return res.json(backupCoinsArray);
 
     } catch (error) {
         console.log(error.message);
@@ -115,22 +100,19 @@ router.get('/api/coins/:coinName', async (req, res) => {
 
         const coinName = req.params.coinName;
 
-        const existingCoins = await Coins.findOne();
 
-        if (!existingCoins && !backupCoinsArray) {
+        if (!backupCoinsArray) {
             return res.send('<h1>Coins cannot be fetched please try again...</h1>');
         }
 
-        const coins = existingCoins.coins;
-
-        const wantedCoin = coins.find((coin, index) => coin.name === makeFirstUpper(coinName) || coin.symbol === coinName.toUpperCase() ? coin : null);
         const backupWantedCoin = backupCoinsArray.find((coin, index) => coin.name === makeFirstUpper(coinName) || coin.symbol === coinName.toUpperCase() ? coin : null);
 
-        if (!wantedCoin && !backupWantedCoin) {
+
+        if (!backupWantedCoin) {
             return res.status(422).send('<h1>Sorry, couldnt find the coin you are looking for...');
         }
         
-        return res.json(wantedCoin || backupWantedCoin);
+        return res.json(backupWantedCoin);
 
     } catch (error) {
         console.log(error.message);
