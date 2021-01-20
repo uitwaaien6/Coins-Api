@@ -72,6 +72,23 @@ async function updateCoins() {
 
 }
 
+router.get('/api', async (req, res) => {
+    try {
+
+        const html = `
+            <h1>API Documentation</h1>
+
+            <h2> ~ To get all coins: /api/coins </h2>
+            <h2> ~ To get a specific coin: /api/coins/{coin_name} || {coin_symbol}. eg: /api/coins/btc or /api/coins/bitcoin </h2>
+        `
+
+        return res.send(html);
+
+    } catch (error) {
+        console.log(error.message);
+    }
+});
+
 router.get('/api/coins', async (req, res) => {
     try {
 

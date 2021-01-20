@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(coinsRoutes);
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const mongoUri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@coinapi.jrg0g.mongodb.net/CoinApi?retryWrites=true&w=majority`;
 
