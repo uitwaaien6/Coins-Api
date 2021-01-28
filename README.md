@@ -1,7 +1,9 @@
 # Coins-Api
 
-# NodeJS API Server for Crypto Market \
-Creating an API Server for the github page.
+# NodeJS API Server for Crypto Market 
+
+Using glitch.com for deployment. \
+Deployed to coinslive.glitch.me.
 
 # Getting Started
 - Clone the repository and cd into the project folder in your terminal.
