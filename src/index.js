@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 const coinsRoutes = require('./routes/coinsRoutes');
+const path = require('path');
 const express = require('express');
 const app = express();
 
@@ -17,3 +18,4 @@ app.get('/', async (req, res) => {
 app.listen(PORT, (req, res) => {
     console.log(`Listening on port: ${PORT}`);
 });
+

@@ -30,15 +30,15 @@ async function updateCoins() {
 
         switch (apiKeyIndex) {
             case 0:
-                currentApiKey = process.env.API_KEY_0 ? process.env.API_KEY_0 : '';
+                currentApiKey = process.env.API_KEY_0 ? process.env.API_KEY_0 : process.env.API_KEY_0;
                 increaseApiKeyIndex();
                 break;
             case 1:
-                currentApiKey = process.env.API_KEY_1 ? process.env.API_KEY_1 : '';
+                currentApiKey = process.env.API_KEY_1 ? process.env.API_KEY_1 : process.env.API_KEY_0;
                 increaseApiKeyIndex();
                 break;
             case 2:
-                currentApiKey = process.env.API_KEY_2 ? process.env.API_KEY_2 : '';
+                currentApiKey = process.env.API_KEY_2 ? process.env.API_KEY_2 : process.env.API_KEY_0;
                 increaseApiKeyIndex();
                 break;
             default:
@@ -119,6 +119,6 @@ router.get('/api/coins/:coinName', async (req, res) => {
     }
 });
 
-initCoinTimer(updateCoins, threeMin);
+initCoinTimer(updateCoins, process.env.API_KEY_1 || process.env.API_KEY_2 ? threeMin : threeMin * 5);
 
 module.exports = router;
